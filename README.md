@@ -13,7 +13,9 @@ The repository directory should be as follows:
 
 -------Prediction: The RF_Prediction python code in this folder uses the output of Attribute_Extraction code, which is a trip file, and imputes the modes.The folder also includes model file and other dependencies.
 
---Inputs: The inputs are separately shared on DropBox. The folders inside the shared DropBox folder should be added to the Inputs folder. The Inputs folder should have the following structure (Otherwise directories in the codes need to be changed):
+--Inputs: The inputs are separately shared on DropBox. The folders inside the shared DropBox folder should be added to the Inputs folder. 
+
+The Inputs folder should have the following structure (Otherwise directories in the codes need to be changed):
 
 --Network_Data
 
