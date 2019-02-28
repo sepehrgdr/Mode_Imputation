@@ -112,10 +112,10 @@ append_dist_attr = function(trip_file, point_file,mode) {
 point_file = fread("../../Inputs/Trip_Data/AirSage_Data/points_long_distance.csv")
 
 #add distances to network
-point_file$rail_dist=dist_to_net(point_file[1:3,c("longitude","latitude")],"../../Inputs/Network_Data/Track_Network/National_Passenger_Rail_Plus_Metro/Psg_rail_NTM_metro.shp")
-point_file$bus_dist=dist_to_net(point_file[1:3,c("longitude","latitude")],"../../Inputs/Network_Data/Bus_Network/National/NTM_Bus_v1.0.shp")
-point_file$road_dist=dist_to_net(point_file[1:3,c("longitude","latitude")],"../../Inputs/Network_Data/Road_Network/National_Major_Roads_and_Interstates/Roads_national.shp")
-point_file$air_dist=dist_to_net(point_file[1:3,c("longitude","latitude")],"../../Inputs/Network_Data/Commercial_Airports/Airport_commercial.shp")
+point_file$rail_dist=dist_to_net(point_file[,c("longitude","latitude")],"../../Inputs/Network_Data/Track_Network/National_Passenger_Rail_Plus_Metro/Psg_rail_NTM_metro.shp")
+point_file$bus_dist=dist_to_net(point_file[,c("longitude","latitude")],"../../Inputs/Network_Data/Bus_Network/National/NTM_Bus_v1.0.shp")
+point_file$road_dist=dist_to_net(point_file[,c("longitude","latitude")],"../../Inputs/Network_Data/Road_Network/National_Major_Roads_and_Interstates/Roads_national.shp")
+point_file$air_dist=dist_to_net(point_file[,c("longitude","latitude")],"../../Inputs/Network_Data/Commercial_Airports/Airport_commercial.shp")
 
 # Convert time columns to POSIXct
 point_file$start_time = as.POSIXct(point_file$start_time,format="%F %T")
@@ -142,6 +142,6 @@ trip_file$trip_id = unique(point_file$trip_id)
   trip_file = append_dist_attr(trip_file, point_file, mode="Air")
 
 # Export full attribute table
-write.csv(trip_file,"../../Inputs/Trip_Data/AirSage_Test_Data/trips_long_distance.csv",row.names = F)
+write.csv(trip_file,"../../Inputs/Trip_Data/AirSage_Data/trips_long_distance.csv",row.names = F)
 
 
