@@ -49,10 +49,13 @@ calc_attr = function(trip_index,file=point_file) {
   # Average speed of trip meters/sec
   avg_spd = round(od_dist/od_time/60,3)
   #point to point speed distribution
-  if(npoint>=3) {
-    dist_vec = distGeo(tmp_df[1:(npoint-1),c("longitude","latitude")],tmp_df[2:npoint,c("longitude","latitude")])
+  time_vec = as.numeric(difftime(tmp_df[2:npoint,"start_time"],tmp_df[1:(npoint-1),"end_time"],units="secs"))
+  nonzero_id = which(time_vec>0)
+  if(length(nonzero_id)>=3) {
+    time_vec = time_vec[nonzero_id]
+    dist_vec = distGeo(tmp_df[1:(npoint-1),c("long","lat")],tmp_df[2:npoint,c("long","lat")])
     dist = sum(dist_vec)
-    time_vec = as.numeric(difftime(tmp_df[2:npoint,"start_time"],tmp_df[1:(npoint-1),"end_time"],units="secs"))
+    dist_vec= dist_vec[nonzero_id]
     spd_vec = round(dist_vec/time_vec,3)
     max_spd = max(spd_vec,na.rm = T)
     min_spd = min(spd_vec,na.rm = T)
