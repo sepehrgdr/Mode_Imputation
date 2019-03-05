@@ -1,5 +1,13 @@
 import fiona
 import shapely.geometry as sg
+from shapely.geometry import asMultiLineString
+import time
+import pandas as pd
+import geopandas
+import csv
+import os
+import numpy as np
+
 
 def calc_dist(in_pts_file, in_net_file, out_path, out_name):
     
@@ -10,9 +18,9 @@ def calc_dist(in_pts_file, in_net_file, out_path, out_name):
                    'properties': {'point_id': 'int','long': 'float','lat': 'float'}}
     try:
         with fiona.open(shapeout, 'w',crs=fiona.crs.from_epsg(4326),driver='ESRI Shapefile', schema=yourschema) as output:
-            reader = csv.DictReader(open(in_pts_file))
+            reader = pd.read_csv(in_pts_file)
             count = 0
-            for row in reader:
+            for index, row in reader.iterrows():
                 # geometry       
                 tmp_point = sg.Point(float(row['long']), float(row['lat']))
                 # attributes
@@ -45,7 +53,8 @@ def calc_dist(in_pts_file, in_net_file, out_path, out_name):
     print("---Projecting a shapefile takes %s seconds for %sMB file---" % ((time.time() - start_time),
                                                                           int(os.path.getsize(in_net_file)*1e-6)))
     net_lines = network['geometry']
-    net_shply = sg.MultiLineString(net_lines.all())
+    line_output = asMultiLineString(net_lines)
+    net_shply = sg.MultiLineString(line_output)
     print("Network converted to Shapely geometry object.")
     
     # Calculate distance
@@ -67,6 +76,8 @@ def calc_dist(in_pts_file, in_net_file, out_path, out_name):
     myfile.close()
     print("Distance calculated and stored!")
 
-
-
+calc_dist(in_pts_file = '/Users/sepehr_ghader/Desktop/Files/Projects/OD Project/AirSage/Inputs/Trip_Data/AirSage_Data/points_long_distance.csv',
+         in_net_file ='/Users/sepehr_ghader/Desktop/Files/Projects/OD Project/AirSage/Inputs/Network_Data/Track_Network/National_Passenger_Rail_Plus_Metro/Psg_rail_NTM_metro.shp' ,
+         out_path = '/Users/sepehr_ghader/Desktop/Files/Projects/OD Project/AirSage/Inputs/Trip_Data/',
+         out_name = 'psg_rail_dist.csv')
 
