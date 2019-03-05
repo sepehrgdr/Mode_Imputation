@@ -66,7 +66,7 @@ add_dist_vec=Vectorize(add_dist)
 add_dist_vec(1:nrow(device_ind_array))
 
 #add speed from
-gps_data$speed_from_t=mat.or.vec(nrow(gps_data),1)
+gps_data$speed_from=mat.or.vec(nrow(gps_data),1)
 gps_data[time_from!=0,speed_from:=gps_data[time_from!=0,dist_from]/gps_data[time_from!=0,time_from]]
 
 #function to identify trips
@@ -99,14 +99,18 @@ trip_identifier=function(row,datatable){
 #set all trip IDs
 gps_data$trip_id=as.character(mat.or.vec(nrow(gps_data),1))
 gps_data$flaged_trip_id=as.character(mat.or.vec(nrow(gps_data),1))
-for (device in 1:nrow(device_ind_array)){
+
+set_trip=function(device){
   first_row= device_ind_array[device,1]
   last_row=device_ind_array[device,2]
   gps_data[first_row,trip_id:=hash_generator()]
   for (obs in (first_row+1):last_row){
-      trip_identifier(obs,gps_data)
+    trip_identifier(obs,gps_data)
   }
 }
+
+set_trip_vec=Vectorize(set_trip)
+set_trip_vec(1:nrow(device_ind_array))
 
 #add device id to trip id
 gps_data$trip_id=paste(gps_data$device_id,gps_data$trip_id,sep='')
