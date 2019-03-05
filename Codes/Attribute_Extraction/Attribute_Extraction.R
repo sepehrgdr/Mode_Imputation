@@ -53,7 +53,7 @@ calc_attr = function(trip_index,file=point_file) {
   nonzero_id = which(time_vec>0)
   if(length(nonzero_id)>=3) {
     time_vec = time_vec[nonzero_id]
-    dist_vec = distGeo(tmp_df[1:(npoint-1),c("long","lat")],tmp_df[2:npoint,c("long","lat")])
+    dist_vec = distGeo(tmp_df[1:(npoint-1),c("longitude","latitude")],tmp_df[2:npoint,c("longitude","latitude")])
     dist = sum(dist_vec)
     dist_vec= dist_vec[nonzero_id]
     spd_vec = round(dist_vec/time_vec,3)
