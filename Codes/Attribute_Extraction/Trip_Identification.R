@@ -1,10 +1,7 @@
 #add libraries
 library(data.table)
 library(geosphere)
-library(chron)
 library(hashids)
-library(anytime)
-
 
 #set the parameters
 distance_threshold=100 #meters
@@ -12,7 +9,7 @@ time_threshold=300 #seconds
 speed_threshold= 0.5 #meters/second
 
 #read the data
-gps_data=fread("../../Inputs/Trip_Data/AirSage_Data/points_long_distance_raw.csv",stringsAsFactors = F,colClasses = "character")
+gps_data=fread("../../Inputs/Trip_Data/AirSage_Data/umd_data_merged.csv",stringsAsFactors = F,colClasses = "character")
 
 #remove duplicate rows
 gps_data=unique(gps_data,by=c("device_id","start"))
