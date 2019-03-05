@@ -38,9 +38,9 @@ RandomForest=pickle.load(open('Random_Forest.sav','rb'))
 prediction=RandomForest.predict(test_data_scaled)
 
 #adding the prediction results to the data
-df['mode']=prediction
+df.mode=prediction
 
 #Combining all trips and saving
 alltrips=df.append(airtrips)
 alltrips=pd.DataFrame.sort_index(alltrips)
-alltrips.to_csv('alltrips.csv')
+alltrips.to_csv('../../Inputs/Trip_Data/AirSage_Data/trips_long_distance_with_mode.csv')
