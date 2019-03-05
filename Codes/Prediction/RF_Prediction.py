@@ -15,7 +15,7 @@ os.chdir(sys.path[0])
 
 
 #loading the data:
-df = pd.read_csv('../../Inputs/Trip_Data/AirSage_Data/trips_long_distance.csv')
+data = pd.read_csv('../../Inputs/Trip_Data/AirSage_Data/trips_long_distance.csv')
 #adding mode attributes to the data
 data['mode']=0
 #Predicting air trips
