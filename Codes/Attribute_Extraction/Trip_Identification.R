@@ -9,7 +9,7 @@ time_threshold=300 #seconds
 speed_threshold= 0.5 #meters/second
 
 #read the data
-gps_data=fread("../../Inputs/Trip_Data/AirSage_Data/umd_data_merged.csv",stringsAsFactors = F,colClasses = "character")
+gps_data=fread("../../Inputs/Trip_Data/AirSage_Data/umd_data_merged.csv",stringsAsFactors = F,nrow=100000)
 
 #remove duplicate rows
 gps_data=unique(gps_data,by=c("device_id","start"))
@@ -53,10 +53,11 @@ add_time_vec(1:nrow(device_ind_array))
 #add_distance_from
 gps_data$dist_from=mat.or.vec(nrow(gps_data),1)
 add_dist=function(i){
-  tmp_df = gps_data[device_ind_array[i,1]:device_ind_array[i,2],]
-  tmp_df = as.data.frame(tmp_df)
+  tmp_df = gps_data[device_ind_array[i,1]:device_ind_array[i,2],c("latitude","longitude")]
+  colnames(tmp_df)=c("lat","long")
   npoint = nrow(tmp_df)
-  dist_vec = c(distGeo(tmp_df[1:(npoint-1),c("longitude","latitude")],tmp_df[2:npoint,c("longitude","latitude")]),0)
+  
+  dist_vec = c(distGeo(tmp_df[1:(nrow(tmp_df)-1),c("long","lat")],tmp_df[2:nrow(tmp_df),c("long","lat")]),0)
   gps_data[device_ind_array[i,1]:device_ind_array[i,2],dist_from:=dist_vec]
 }
 add_dist_vec=Vectorize(add_dist)
