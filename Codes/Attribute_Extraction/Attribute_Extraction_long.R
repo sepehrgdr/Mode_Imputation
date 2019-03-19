@@ -133,7 +133,7 @@ attr_extr=function(core){
 cl = makeCluster(32)
 registerDoSNOW(cl)
 getDoParWorkers()
-clusterExport(cl,c("timedifference","calc_attr","nobs","append_dist_attr"),envir=.GlobalEnv)
+clusterExport(cl,c("timedifference","calc_attr","append_dist_attr"),envir=.GlobalEnv)
 foreach(core=0:31,.packages=c("chron","data.table","plyr","geosphere")) %dopar%  attr_extr(core)
 stopCluster(cl)
 rm(cl)

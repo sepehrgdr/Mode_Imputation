@@ -4,8 +4,10 @@ library(plyr)
 library(geosphere)
 require(parallel)
 library(chron)
+library(foreach)
+library(doSNOW)
 
-files <- list.files(path = "../../../umd_short_trips", pattern = "*.csv", full.names = TRUE)
+files <- list.files(path = "../../Inputs", pattern = "*.csv", full.names = TRUE)
 
 #function to calculate timedifference
 
@@ -92,6 +94,14 @@ attr_extr=function(core){
     #Read the trip file
     point_file = fread(files[core],stringsAsFactors = F)
     
+    #remove duplicate rows
+    point_file=unique(point_file,by=c("trip_id","Initial Epoch Time"))
+    
+    #remove id's with single observation
+    obs_by_id=point_file[,.(.N),trip_id]
+    single_obs_ids=obs_by_id[N==1,trip_id]
+    point_file=point_file[!trip_id %in% single_obs_ids,]
+    
     # prepare trip start/end index array
     trip_start_id=which(!duplicated(point_file$trip_id))
     trip_end_id=which(!duplicated(point_file$trip_id,fromLast=TRUE))
@@ -113,9 +123,20 @@ attr_extr=function(core){
       trip_file = append_dist_attr(trip_file, point_file, mode="Air")
 
     # Export full attribute table
-    write.csv(trip_file,paste0("trips_short_distance",core,".csv"),row.names = F)
+    write.csv(trip_file,paste0("../../Inputs/trips_short_distance",core,".csv"),row.names = F)
 }
 
-mclapply(1:30, attr_extr, mc.cores=10)
+#mclapply(1:30, attr_extr, mc.cores=10)
+
+#paralel application
+cl = makeCluster(30)
+registerDoSNOW(cl)
+getDoParWorkers()
+clusterExport(cl,c("calc_attr","append_dist_attr"),envir=.GlobalEnv)
+foreach(core=1:30,.packages=c("data.table","plyr","geosphere")) %dopar%  attr_extr(core)
+stopCluster(cl)
+rm(cl)
+closeAllConnections()
+
 
 
